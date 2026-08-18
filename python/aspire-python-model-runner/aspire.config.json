@@ -1,0 +1,5 @@
+{
+    "appHost": {
+        "path": "..\\..\\src\\Aspire.PythonModelRunner.AppHost\\Aspire.PythonModelRunner.AppHost.csproj"
+    }
+}

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Aspire.AppHost.Sdk/13.5.3">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+	<AspireUseCliBundle>true</AspireUseCliBundle>
+    <UserSecretsId>6d41e72c-f7d2-458a-b6f9-c7bcc8b4cc4a</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.Azure.AppContainers" />
+    <PackageReference Include="Aspire.Hosting.Azure.ServiceBus" />
+    <PackageReference Include="Aspire.Hosting.Azure.Storage" />
+    <PackageReference Include="Aspire.Hosting.Python" />
+    <PackageReference Include="Scalar.Aspire" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aspire.PythonModelRunner.Backend\Aspire.PythonModelRunner.Backend.csproj" AspireProjectMetadataTypeName="Backend" />
+    <ProjectReference Include="..\Aspire.PythonModelRunner.Frontend\Aspire.PythonModelRunner.Frontend.csproj" AspireProjectMetadataTypeName="Frontend" />
+    <ProjectReference Include="..\Aspire.PythonModelRunner.Shared\Aspire.PythonModelRunner.Shared.csproj" IsAspireProjectResource="false" />
+  </ItemGroup>
+
+</Project>

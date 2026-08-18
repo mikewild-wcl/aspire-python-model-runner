@@ -1,0 +1,89 @@
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<button class="about-btn" @onclick="ShowAbout" title="Shift+A"><u>A</u>bout</button>
+
+@if (_showAbout)
+{
+    <div class="modal-backdrop" @onclick="HideAbout" @onkeydown="HandleKey" tabindex="-1" @ref="_backdrop">
+        <div class="modal-card" @onclick:stopPropagation>
+            <button class="modal-close" @onclick="HideAbout" aria-label="Close">&#x2715;</button>
+            <h2>About this app</h2>
+            <p>
+                This is a <strong>Blazor</strong> frontend for running Python-based models through an Aspire-orchestrated application.
+            </p>
+            <p>
+                The frontend lets users select a model, provide its parameters, and view the results returned by the Python model service.
+            </p>
+            <p>
+                Aspire coordinates the Blazor frontend, the .NET API, and the Python service, with service discovery and deployment support for local development and Azure Container Apps.
+            </p>
+        </div>
+    </div>
+}
+
+@code {
+    private const string SpaceKey = " ";
+
+    private bool _showAbout;
+    private ElementReference _backdrop;
+    private IJSObjectReference? _module;
+    private DotNetObjectReference<About>? _dotNetRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        _dotNetRef = DotNetObjectReference.Create(this);
+        _module = await JS.InvokeAsync<IJSObjectReference>("import", "./Components/Layout/About.razor.js");
+        await _module.InvokeVoidAsync("registerShortcut", _dotNetRef);
+    }
+
+    [JSInvokable]
+    public Task OpenFromShortcut() => InvokeAsync(ShowAbout);
+
+    private async Task ShowAbout()
+    {
+        _showAbout = true;
+        StateHasChanged(); // trigger re-render so _backdrop is mounted
+        await Task.Yield(); // allow the element to render before focusing
+        await _backdrop.FocusAsync();
+    }
+
+    private void HideAbout() => _showAbout = false;
+
+    private void HandleKey(KeyboardEventArgs e)
+    {
+        if (e.Key is "Escape" or SpaceKey or "Enter" or "NumericEnter") HideAbout();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is not null)
+        {
+            try
+            {
+                await _module.InvokeVoidAsync("unregisterShortcut");
+            }
+            catch (JSDisconnectedException)
+            {
+                // Circuit already disconnected; no JS available during teardown.
+            }
+
+            try
+            {
+                await _module.DisposeAsync();
+            }
+            catch (JSDisconnectedException)
+            {
+                // Circuit already disconnected; no JS available during teardown.
+            }
+        }
+
+        _dotNetRef?.Dispose();
+    }
+}

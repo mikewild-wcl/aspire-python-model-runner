@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests/Aspire.PythonModelRunner.AppHost.Tests/Aspire.PythonModelRunner.AppHost.Tests.csproj" Id="eac193bf-b109-4e00-b93c-b2a6878bf287" />
+    <Project Path="tests/Aspire.PythonModelRunner.Common.Tests/Aspire.PythonModelRunner.Common.Tests.csproj" Id="b3ec0fb1-4d9a-4c55-9f53-93186035f3af" />
+  </Folder>
+  <Project Path="src/Aspire.PythonModelRunner.AppHost/Aspire.PythonModelRunner.AppHost.csproj" />
+  <Project Path="src/Aspire.PythonModelRunner.Backend/Aspire.PythonModelRunner.Backend.csproj" />
+  <Project Path="src/Aspire.PythonModelRunner.Common/Aspire.PythonModelRunner.Common.csproj" Id="f13a0833-00c5-451b-87ca-f642e55cfb4a" />
+  <Project Path="src/Aspire.PythonModelRunner.Frontend/Aspire.PythonModelRunner.Frontend.csproj" />
+  <Project Path="src/Aspire.PythonModelRunner.ServiceDefaults/Aspire.PythonModelRunner.ServiceDefaults.csproj" />
+  <Project Path="src/Aspire.PythonModelRunner.Shared/Aspire.PythonModelRunner.Shared.csproj" />
+</Solution>

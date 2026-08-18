@@ -1,0 +1,86 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+@using Aspire.PythonModelRunner.Shared
+@using Microsoft.FeatureManagement
+@using Microsoft.Identity.Web
+
+@inject IFeatureManager FeatureManager
+@inject IHttpClientFactory HttpClientFactory
+@inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
+
+<PageTitle>Home</PageTitle>
+
+<h1>Home</h1>
+
+@if (_useEntraAuthentication == true)
+{
+    <AuthorizeView>
+        <Authorized>
+            @PythonRunnerContent
+        </Authorized>
+        <NotAuthorized>
+            <p>You need to <a href="/login">log in</a> to call the Python model.</p>
+        </NotAuthorized>
+    </AuthorizeView>
+}
+else
+{
+    @PythonRunnerContent
+}
+
+@code {
+    private bool? _useEntraAuthentication;
+    private string? helloResult;
+    private string? errorMessage;
+    private bool isLoading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _useEntraAuthentication =
+            await FeatureManager.IsEnabledAsync(FeatureFlags.UseEntraAuthentication);
+    }
+
+    private async Task GetPythonHelloAsync()
+    {
+        isLoading = true;
+        helloResult = null;
+        errorMessage = null;
+
+        try
+        {
+            var client = HttpClientFactory.CreateClient("Backend");
+            helloResult = await client.GetStringAsync("api/v1/python/hello");
+        }
+        catch (MicrosoftIdentityWebChallengeUserException exception)
+        {
+            ConsentHandler.HandleException(exception);
+        }
+        catch (HttpRequestException)
+        {
+            errorMessage = "The backend could not be reached.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private RenderFragment PythonRunnerContent => @<text>
+        <p>
+            <button class="btn btn-primary" @onclick="GetPythonHelloAsync" disabled="@isLoading">
+                @(isLoading ? "Calling..." : "Call Python hello")
+            </button>
+        </p>
+
+        @if (helloResult is not null)
+        {
+            <p role="status">Python response: @helloResult</p>
+        }
+
+        @if (errorMessage is not null)
+        {
+            <p class="text-danger" role="alert">@errorMessage</p>
+        }
+    </text>;
+}

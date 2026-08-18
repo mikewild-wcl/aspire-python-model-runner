@@ -1,0 +1,28 @@
+[project]
+name = "aspire-python-model-runner"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Mike Wild", email = "Mike.Wild@wearejust.co.uk" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "azure-monitor-opentelemetry-exporter>=1.0.0b56",
+    "azure-servicebus>=7.14.3",
+    "fastapi[standard]>=0.141.1",
+    "opentelemetry-exporter-otlp-proto-grpc>=1.43.0",
+    "opentelemetry-instrumentation-fastapi>=0.64b0",
+    "opentelemetry-instrumentation-httpx>=0.64b0",
+    "opentelemetry-sdk>=1.43.0",
+    "pyjwt[crypto]>=2.10.1",
+    "python-dotenv>=1.2.3",
+    "uvicorn>=0.52.4",
+]
+
+[project.scripts]
+aspire-python-model-runner = "aspire_python_model_runner:main"
+
+[build-system]
+requires = ["uv_build>=0.12.7,<0.13.0"]
+build-backend = "uv_build"

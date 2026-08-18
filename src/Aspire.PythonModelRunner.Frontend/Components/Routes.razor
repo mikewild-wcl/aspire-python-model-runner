@@ -1,0 +1,33 @@
+﻿@using Aspire.PythonModelRunner.Shared
+@using Microsoft.FeatureManagement
+
+@inject IFeatureManager FeatureManager
+
+<Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Pages.NotFound)">
+    <Found Context="routeData">
+        @if (_useEntraAuthentication == true)
+        {
+            <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
+                <NotAuthorized>
+                    <RedirectToLogin />
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        }
+        else
+        {
+            <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+        }
+
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+    </Found>
+</Router>
+
+@code {
+    private bool? _useEntraAuthentication;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _useEntraAuthentication =
+            await FeatureManager.IsEnabledAsync(FeatureFlags.UseEntraAuthentication);
+    }
+}
